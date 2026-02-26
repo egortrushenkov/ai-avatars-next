@@ -25,8 +25,4 @@ export default function DIDAgent() {
             if (existing) existing.remove();
         };
     }, []);
-
-    return (
-        <div id="wrapper-id" style={{ width: '100%', height: '100%' }} />
-    );
 }
