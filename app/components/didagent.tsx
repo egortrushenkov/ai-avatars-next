@@ -9,7 +9,7 @@ export default function DIDAgent() {
 
         const script = document.createElement('script');
         script.type = 'module';
-        script.src = 'https://agent.d-id.com/v2/index.js';
+        script.src = '/did-sdk/v2/index.js';
         script.setAttribute('data-mode', 'full');
         script.setAttribute('data-client-key', 'Z29vZ2xlLW9hdXRoMnwxMDcwNzg4NzgxMDI0ODU2Nzc4Mjc6RnBkelluWlEzREJKTE1JZjZIa3V5');
         script.setAttribute('data-agent-id', 'v2_agt_ODP2-9pe');
@@ -25,4 +25,5 @@ export default function DIDAgent() {
             if (existing) existing.remove();
         };
     }, []);
+    return null; // Компонент не рендерит ничего
 }
