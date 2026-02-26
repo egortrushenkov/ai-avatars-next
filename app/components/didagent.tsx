@@ -12,7 +12,7 @@ export default function DIDAgent() {
         script.src = 'https://agent.d-id.com/v2/index.js';
         script.setAttribute('data-mode', 'full');
         script.setAttribute('data-client-key', 'Z29vZ2xlLW9hdXRoMnwxMDcwNzg4NzgxMDI0ODU2Nzc4Mjc6RnBkelluWlEzREJKTE1JZjZIa3V5');
-        script.setAttribute('data-agent-id', 'v2_agt_wViqI--x');
+        script.setAttribute('data-agent-id', '');
         script.setAttribute('data-name', 'did-agent');
         script.setAttribute('data-monitor', 'true');
         script.setAttribute('data-target-id', 'wrapper-id');
