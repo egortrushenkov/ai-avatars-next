@@ -1,50 +1,54 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function DIDAgent() {
+    const managerRef = useRef<any>(null);
+
     useEffect(() => {
-        if (document.querySelector('script[data-name="did-agent"]')) return;
+        let agentManager: any;
 
-        // Перехватываем fetch
-        const originalFetch = window.fetch;
-        window.fetch = function(url, options) {
-            if (typeof url === 'string') {
-                url = url
-                    .replace('https://agent.d-id.com/', '/did-proxy/agent/')
-                    .replace('https://api.d-id.com/', '/did-proxy/api/');
+        async function init() {
+            const sdk = await import('@d-id/client-sdk');
+
+            agentManager = await sdk.createAgentManager('v2_agt_ODP2-9pe', {
+            auth: {
+                type: 'key',
+                clientKey: 'Z29vZ2xlLW9hdXRoMnwxMDcwNzg4NzgxMDI0ODU2Nzc4Mjc6RnBkelluWlEzREJKTE1JZjZIa3V5'
+            },
+            baseURL: 'https://avatars.labskit.ru/did-proxy/api',
+            wsURL: 'wss://avatars.labskit.ru/did-proxy/agent',
+            callbacks: {
+                onSrcObjectReady(value: MediaStream) {
+                    const video = document.querySelector('#did-video') as HTMLVideoElement;
+                    if (video) video.srcObject = value;
+                },
+                onConnectionStateChange(state) {
+                    console.log('Connection state:', state);
+                },
+                onVideoStateChange(state) {
+                    console.log('Video state:', state);
+                }
+            },
+            streamOptions: {
+                compatibilityMode: 'auto',
+                streamWarmup: true
             }
-            return originalFetch.call(this, url, options);
-        };
+        });
 
-        // Перехватываем WebSocket
-        const OriginalWebSocket = window.WebSocket;
-        window.WebSocket = (function(url: string | URL, protocols?: string | string[]) {
-            if (typeof url === 'string') {
-                url = url
-                    .replace('wss://agent.d-id.com/', 'wss://avatars.labskit.ru/did-proxy/agent/')
-                    .replace('wss://api.d-id.com/', 'wss://avatars.labskit.ru/did-proxy/api/');
-            }
-            return new OriginalWebSocket(url, protocols);
-        } as unknown) as typeof WebSocket;
-        Object.setPrototypeOf(window.WebSocket, OriginalWebSocket);
+            managerRef.current = agentManager;
+            await agentManager.connect();
+        }
 
-        const script = document.createElement('script');
-        script.type = 'module';
-        script.src = '/did-sdk/v2/index.js';
-        script.setAttribute('data-mode', 'full');
-        script.setAttribute('data-client-key', 'Z29vZ2xlLW9hdXRoMnwxMDcwNzg4NzgxMDI0ODU2Nzc4Mjc6RnBkelluWlEzREJKTE1JZjZIa3V5');
-        script.setAttribute('data-agent-id', 'v2_agt_ODP2-9pe');
-        script.setAttribute('data-name', 'did-agent');
-        script.setAttribute('data-monitor', 'true');
-        script.setAttribute('data-target-id', 'wrapper-id');
-        document.body.appendChild(script);
+        init().catch(console.error);
 
         return () => {
-            document.querySelector('script[data-name="did-agent"]')?.remove();
-            window.fetch = originalFetch;
-            window.WebSocket = OriginalWebSocket;
+            managerRef.current?.disconnect?.();
         };
     }, []);
 
-    return null;
+    return (
+        <div id="wrapper-id">
+            <video id="did-video" autoPlay playsInline />
+        </div>
+    );
 }
