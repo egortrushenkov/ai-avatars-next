@@ -1,11 +1,32 @@
 'use client';
-
 import { useEffect } from 'react';
 
 export default function DIDAgent() {
     useEffect(() => {
-        // Проверяем, не загружен ли скрипт уже
         if (document.querySelector('script[data-name="did-agent"]')) return;
+
+        // Перехватываем fetch
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options) {
+            if (typeof url === 'string') {
+                url = url
+                    .replace('https://agent.d-id.com/', '/did-proxy/agent/')
+                    .replace('https://api.d-id.com/', '/did-proxy/api/');
+            }
+            return originalFetch.call(this, url, options);
+        };
+
+        // Перехватываем WebSocket
+        const OriginalWebSocket = window.WebSocket;
+        window.WebSocket = function(url, protocols) {
+            if (typeof url === 'string') {
+                url = url
+                    .replace('wss://agent.d-id.com/', 'wss://avatars.labskit.ru/did-proxy/agent/')
+                    .replace('wss://api.d-id.com/', 'wss://avatars.labskit.ru/did-proxy/api/');
+            }
+            return new OriginalWebSocket(url, protocols);
+        };
+        Object.setPrototypeOf(window.WebSocket, OriginalWebSocket);
 
         const script = document.createElement('script');
         script.type = 'module';
@@ -16,14 +37,14 @@ export default function DIDAgent() {
         script.setAttribute('data-name', 'did-agent');
         script.setAttribute('data-monitor', 'true');
         script.setAttribute('data-target-id', 'wrapper-id');
-
         document.body.appendChild(script);
 
         return () => {
-            // Чистим при размонтировании компонента
-            const existing = document.querySelector('script[data-name="did-agent"]');
-            if (existing) existing.remove();
+            document.querySelector('script[data-name="did-agent"]')?.remove();
+            window.fetch = originalFetch;
+            window.WebSocket = OriginalWebSocket;
         };
     }, []);
-    return null; // Компонент не рендерит ничего
+
+    return null;
 }
