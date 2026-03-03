@@ -18,14 +18,14 @@ export default function DIDAgent() {
 
         // Перехватываем WebSocket
         const OriginalWebSocket = window.WebSocket;
-        window.WebSocket = function(url, protocols) {
+        window.WebSocket = (function(url: string | URL, protocols?: string | string[]) {
             if (typeof url === 'string') {
                 url = url
                     .replace('wss://agent.d-id.com/', 'wss://avatars.labskit.ru/did-proxy/agent/')
                     .replace('wss://api.d-id.com/', 'wss://avatars.labskit.ru/did-proxy/api/');
             }
             return new OriginalWebSocket(url, protocols);
-        };
+        } as unknown) as typeof WebSocket;
         Object.setPrototypeOf(window.WebSocket, OriginalWebSocket);
 
         const script = document.createElement('script');
