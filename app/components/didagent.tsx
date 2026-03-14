@@ -60,6 +60,7 @@ function unpatchRTCPeerConnection() {
 
 export default function DIDAgent() {
     const managerRef = useRef<any>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
         let cancelled = false;
@@ -87,8 +88,7 @@ export default function DIDAgent() {
                 wsURL: 'wss://avatars.labskit.ru/did-proxy/agent',
                 callbacks: {
                     onSrcObjectReady(value: MediaStream) {
-                        const video = document.querySelector('video') as HTMLVideoElement;
-                        if (video) video.srcObject = value;
+                        if (videoRef.current) videoRef.current.srcObject = value;
                     },
                     onConnectionStateChange(state: any) {
                         console.log('Connection state:', state);
@@ -116,5 +116,12 @@ export default function DIDAgent() {
         };
     }, []);
 
-    return null;
+    return (
+        <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            style={{ width: '100%', height: '100%' }}
+        />
+    );
 }
