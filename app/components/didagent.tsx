@@ -82,7 +82,7 @@ export default function DIDAgent() {
             const agentManager = await sdk.createAgentManager('v2_agt_ODP2-9pe', {
                 auth: {
                     type: 'key',
-                    clientKey: 'Z29vZ2xlLW9hdXRoMnwxMDcwNzg4NzgxMDI0ODU2Nzc4Mjc6RnBkelluWlEzREJKTE1JZjZIa3V5'
+                    clientKey: 'ZXRydXNoZW5rb3ZAZ21haWwuY29t:bvlaVx_urxKZRrBoPIJZu'
                 },
                 baseURL: 'https://avatars.labskit.ru/did-proxy/api',
                 wsURL: 'wss://avatars.labskit.ru/did-proxy/agent',
