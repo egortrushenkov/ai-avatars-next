@@ -31,11 +31,15 @@ export default function RootLayout({
         {children}
         <Script
           src="https://avatars.labskit.ru/did-sdk/v2/index.js"
-          data-mode="full"
+          strategy="afterInteractive"
+          data-mode="fabio"
           data-client-key="Z29vZ2xlLW9hdXRoMnwxMDcwNzg4NzgxMDI0ODU2Nzc4Mjc6RnBkelluWlEzREJKTE1JZjZIa3V5"
           data-agent-id="v2_agt_ODP2-9pe"
           data-name="did-agent"
           data-monitor="true"
+          data-orientation="horizontal"
+          data-position="right"
+          data-open-mode="expanded"
           type="module"
         />
       </body>
