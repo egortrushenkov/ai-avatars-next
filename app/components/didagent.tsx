@@ -118,9 +118,11 @@ export default function DIDAgent() {
 
     return (
         <video
+            id="agent-video"
             ref={videoRef}
             autoPlay
             playsInline
+            muted
             style={{ width: '100%', height: '100%' }}
         />
     );
