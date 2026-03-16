@@ -3,8 +3,9 @@ import DIDAgent from "@/app/components/didagent";
 export default function Home() {
     return (
         <>
-            <div className="wrapper" id="wrapper-id"></div>
-            <DIDAgent/>
+            <div className="wrapper" id="wrapper-id">
+                <DIDAgent/>
+            </div>
         </>
     );
 }
